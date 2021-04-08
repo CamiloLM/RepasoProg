@@ -33,7 +33,6 @@ int changeValue = 50;
 
 void setup() {
     size(600, 400);
-    // frameRate(10);
 
     // Arreglos instanciados
     currentBoard = new int[width/cellSize][height/cellSize];
@@ -156,6 +155,9 @@ void keyPressed() {
                 }
             }
         }
+        if (pause) {
+            pause = !pause;
+        }
     }
 
     // Pausar el juego
@@ -170,7 +172,9 @@ void keyPressed() {
                 currentBoard[x][y] = 0;
             }
         }
-        pause = !pause;
+        if (!pause) {
+            pause = !pause;
+        }
     }
 
     // Cambiar la velocidad
