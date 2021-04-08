@@ -1,10 +1,11 @@
 /*
 Implementacion del Juego de la Vida de Conway en Processing
 Comandos:
- Presiona la Barra Espaciadora para pausar el juego
- Presiona el raton para cambiar el valor de las celular durante el juego pausado
- Presiona R para generar un nuevo tablero aleatorio
- Presiona C para generar un tablero limpio
+  Presiona la Barra Espaciadora para pausar el juego
+  Presiona el raton para cambiar el valor de las celular durante el juego pausado
+  Presiona R para generar un nuevo tablero de celulas aletorias
+  Presiona C para generar un tablero limpio de celulas y pausar el juego
+  Preiona +/- para aumentar o reducir la velocidad del juego respectivamente
 */
 
 
@@ -22,17 +23,23 @@ int [][] nextBoard;
 color alive = color(0, 200, 0);
 color dead = color(0);
 
-// Pausa
+// Estado del juego
 boolean pause = false;
+
+// Variables del tiempo
+int interval = 200;
+int timeElapsed = 0;
+int changeValue = 50;
 
 void setup() {
     size(600, 400);
-    frameRate(10);
+    // frameRate(10);
 
     // Arreglos instanciados
     currentBoard = new int[width/cellSize][height/cellSize];
     nextBoard = new int[width/cellSize][height/cellSize];
 
+    // Estilos
     background(0);
     stroke(48);
     strokeWeight(2);
@@ -52,7 +59,7 @@ void setup() {
 }
 
 void draw() {
-    // Dibujando el tablero
+    // Dibujando el tablero inicial
     for (int x = 0; x < width/cellSize; x++) {
         for (int y = 0; y < height/cellSize; y++) {
             if (currentBoard[x][y] == 1) {
@@ -64,33 +71,40 @@ void draw() {
         }
     }
 
-    if (pause) {
-        if (mousePressed) {
-            // Mapeo de Coordenadas
-            int xCoord = int(map(mouseX, 0, width, 0, width/cellSize));
-            int yCoord = int(map(mouseY, 0, height, 0, height/cellSize));
-            println("(" + xCoord + "), " + "(" + yCoord + ")");
+    // Manejo del tiempo
+    if ((millis() - timeElapsed) > interval) {
+        if (!pause) {
+            interaction();
+            timeElapsed = millis();
+        }
+    }
 
-            if (nextBoard[xCoord][yCoord] == 1) {
-                currentBoard[xCoord][yCoord] = 0;
-                fill(dead);
-            } else {
-                currentBoard[xCoord][yCoord] = 1;
-                fill(alive);
-            }
+    // Dibujo manual de las celulas
+    if (pause && mousePressed) {
+        // Mapeo de Coordenadas
+        int xCoord = int(map(mouseX, 0, width, 0, width/cellSize));
+        int yCoord = int(map(mouseY, 0, height, 0, height/cellSize));
+
+        // Ejecutando los cambios
+        if (nextBoard[xCoord][yCoord] == 1) {
+            currentBoard[xCoord][yCoord] = 0;
+            fill(dead);
         } else {
-            for (int x = 0; x < width/cellSize; x++) {
-                for (int y = 0; y < height/cellSize; y++) {
-                    nextBoard[x][y] = currentBoard[x][y];
-                }
+            currentBoard[xCoord][yCoord] = 1;
+            fill(alive);
+        }
+    }
+    // Guardando de los cambios
+    else if (pause && !mousePressed) {
+        for (int x = 0; x < width/cellSize; x++) {
+            for (int y = 0; y < height/cellSize; y++) {
+                nextBoard[x][y] = currentBoard[x][y];
             }
         }
-    } else {
-        interaccion();
     }
 }
 
-void interaccion() {
+void interaction() {
     // Creando una copia del tablero actual
     for (int x = 0; x < width/cellSize; x++) {
         for (int y = 0; y < height/cellSize; y++) {
@@ -101,8 +115,8 @@ void interaccion() {
     // Analizando a las celulas
     for (int x = 0; x < width/cellSize; x++) {
         for (int y = 0; y < height/cellSize; y++) {
-            int neighbours = 0;
             // Conteo de vecinos
+            int neighbours = 0;
             for (int i = x-1; i <= x+1; i++) {
                 for (int j = y-1; j <= y+1; j++) {
                     if (((i>=0) && (i<width/cellSize)) && ((j>=0) && (j<height/cellSize))) {
@@ -114,6 +128,7 @@ void interaccion() {
                     }
                 }
             }
+
             // Reglas de la vida
             if (nextBoard[x][y] == 1) {
                 if (neighbours < 2 || neighbours > 3) {
@@ -154,6 +169,19 @@ void keyPressed() {
             for (int y = 0; y < height/cellSize; y++) {
                 currentBoard[x][y] = 0;
             }
+        }
+        pause = !pause;
+    }
+
+    // Cambiar la velocidad
+    if (key=='+' || key=='-' && interval>=0 && interval<=400) {
+        // Aumentar la velocidad / Reducir el intervalo
+        if (key=='+' && interval > 0) {
+            interval -= changeValue;
+        }
+        // Reducir la velocidad / Aumentar el intervalo
+        if (key=='-' && interval < 400) {
+            interval += changeValue;
         }
     }
 }
