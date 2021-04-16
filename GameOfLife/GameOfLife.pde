@@ -1,12 +1,12 @@
 /*
 Implementacion del Juego de la Vida de Conway en Processing
 Comandos:
- Presiona la Barra Espaciadora para pausar el juego
- Presiona el raton para cambiar el valor de las celular durante el juego pausado
- Presiona R para generar un nuevo tablero de celulas aletorias
- Presiona C para generar un tablero limpio de celulas y pausar el juego
- Presiona +/- para aumentar o reducir la velocidad del juego respectivamente
- */
+  Presiona la Barra Espaciadora para pausar el juego
+  Presiona el raton para cambiar el valor de las celular durante el juego pausado
+  Presiona R para generar un nuevo tablero de celulas aletorias
+  Presiona C para generar un tablero limpio de celulas y pausar el juego
+  Presiona +/- para aumentar o reducir la velocidad del juego respectivamente
+*/
 
 
 // Tamaño de la celda
@@ -20,7 +20,7 @@ int [][] currentBoard;
 int [][] nextBoard;
 
 // Color de las celulas
-color alive = color(0, 200, 0);
+color alive = color(52, 255, 8);
 color dead = color(0);
 
 // Estado del juego
